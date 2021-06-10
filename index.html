@@ -1,0 +1,127 @@
+<html>
+
+<head>
+    <title>Audio Player</title>
+</head>
+
+<body>
+
+    <div style="display: flex; justify-content: center;">
+        <canvas id="my_canvas" width="35" height="230" style=""></canvas>
+    </div>
+
+    <div style="display: flex; align-items: center; justify-content: center; ">
+        <img src="assets/play.png" id="playButton" alt="Play button" width="100" height="100"
+            style="justify-self: center;">
+
+    </div>
+
+    <audio style="display:none" id="myAudio" controls preload="metadata">
+        <source src="assets/music1.mp3" type="audio/mpeg">
+    </audio>
+
+
+    <script type="text/javascript">
+
+    </script>
+
+    <script>
+        var my_canvas = document.getElementById("my_canvas");
+        var gctx = my_canvas.getContext("2d");
+
+        var bar_width = 5;
+        var bar_gap = 8; // Gap between Bars including width of the bar
+        var x = 20; // Margin of graph from left  
+        var y = 100; //my_canvas.height
+
+        my_canvas.width = 1100;
+        ////////////end of settings ////
+
+        /////////// Draw the initial graph ////////
+        var au = document.getElementById("myAudio");
+        au.onloadedmetadata = function () {
+            var duration = au.duration;
+            var playingNow = false;
+            var a;
+            var ymap = new Array(parseInt(duration));
+
+            for (i = 0; i < duration; i++) {
+
+                var r = Math.floor(Math.random() * (150 + 150 + 1) - 150);
+                y1 = y - r;
+                x1 = x;
+                ymap[i] = y1;
+
+                gctx.fillStyle = 'grey'; // fill Colur of bar  
+
+                gctx.fillRect(x1, Math.max(y1, 30), bar_width, r);// Filled bar 
+                gctx.fillRect(x1, 100, bar_width, 50);// Filled bar 
+
+                x = x + bar_gap
+
+            }// end of for loop 
+
+            i = 0; x = 20;
+
+            au.onplay = function () {
+                if (i > au.currentTime) {
+                    while (i > parseInt(au.currentTime)) {
+                        gctx.fillStyle = 'grey'; // fill Colur of bar  
+                        gctx.fillRect(x, Math.max(ymap[i], 30), bar_width, y - ymap[i]);// Filled bar 
+                        gctx.fillRect(x, 100, bar_width, 50);// Filled bar 
+                        i--;
+                        x = x - bar_gap
+                    }
+                }
+                else {
+                    while (i < parseInt(au.currentTime)) {
+                        gctx.fillStyle = '#f52369'; // fill Colur of bar  
+                        gctx.fillRect(x, Math.max(ymap[i], 30), bar_width, y - ymap[i]);// Filled bar 
+                        gctx.fillRect(x, 100, bar_width, 50);// Filled bar 
+                        i++;
+                        x = x + bar_gap
+                    }
+                }
+                i = parseInt(au.currentTime);
+                a = setInterval(function () {
+                    gctx.fillStyle = '#f52369'; // fill Colur of bar  
+                    gctx.fillRect(x, Math.max(ymap[i], 30), bar_width, y - ymap[i]);// Filled bar 
+                    gctx.fillRect(x, 100, bar_width, 50);// Filled bar 
+                    x = x + bar_gap;
+                    i++;
+                }, 1000);
+            }
+            au.onpause = function () {
+                clearInterval(a);
+            }
+
+            let playButton = document.getElementById("playButton");
+
+            playButton.addEventListener("click", function (e) {
+                if (!au.paused) {
+                    au.pause();
+                }
+                else
+                    au.play();
+            });
+
+            function getMousePosition(canvas, event) {
+                au.pause()
+                let rect = canvas.getBoundingClientRect();
+                let x = event.clientX - rect.left;
+                let y = event.clientY - rect.top;
+                au.currentTime = (x - 20) / 8;
+                au.play()
+            }
+
+            let canvasElem = document.getElementById("my_canvas");
+
+            canvasElem.addEventListener("mousedown", function (e) {
+                getMousePosition(canvasElem, e);
+            });
+        }
+
+    </script>
+</body>
+
+</html>
