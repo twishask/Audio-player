@@ -7,7 +7,7 @@
 <body>
 
     <div style="display: flex; justify-content: center;">
-        <canvas id="my_canvas" width="35" height="230" style=""></canvas>
+        <canvas id="my_canvas" width="35" height="230" ></canvas>
     </div>
 
     <div style="display: flex; align-items: center; justify-content: center; ">
@@ -32,9 +32,10 @@
         var bar_width = 5;
         var bar_gap = 8; // Gap between Bars including width of the bar
         var x = 20; // Margin of graph from left  
-        var y = 100; //my_canvas.height
+        var y = 200; //my_canvas.height
 
         my_canvas.width = 1100;
+        my_canvas.height=400
         ////////////end of settings ////
 
         /////////// Draw the initial graph ////////
@@ -45,6 +46,7 @@
             var a;
             var ymap = new Array(parseInt(duration));
 
+            
             for (i = 0; i < duration; i++) {
 
                 var r = Math.floor(Math.random() * (150 + 150 + 1) - 150);
@@ -55,12 +57,33 @@
                 gctx.fillStyle = 'grey'; // fill Colur of bar  
 
                 gctx.fillRect(x1, Math.max(y1, 30), bar_width, r);// Filled bar 
-                gctx.fillRect(x1, 100, bar_width, 50);// Filled bar 
+                gctx.fillRect(x1, y, bar_width, 50);// Filled bar 
 
                 x = x + bar_gap
 
             }// end of for loop 
 
+            let tagsObj = [
+                {x1:100, y1:20, text:"Introduction", color:'blue', width: 115},
+                {x1:230, y1:30, text:"Closure", color:'green', width: 77},
+                {x1:550, y1:20, text:"Referrals", color:'brown', width: 90},
+                {x1:800, y1:68, text:"Profile", color:'darkgreen', width: 65},
+                {x1:900, y1:15, text:"Report Building", color:'maroon', width: 144},
+                ]
+                tagsObj.map((item) => {
+                    if(item.x1 < 8*parseInt(duration)){
+                var x1 = item.x1;
+                var y1 = item.y1;
+                var h = 25;
+                gctx.fillStyle = item.color; // fill Colur of bar  
+                gctx.fillRect(x1, y1, item.width, h);// Filled bar 
+                gctx.fillRect(x1+50, y1, bar_width, y-y1);// Filled bar 
+                gctx.fillStyle = 'white'; // fill Colur of bar  
+                gctx.font = "20px Arial";
+                gctx.fillText(item.text, x1, y1+h-5);
+            }
+                })
+            
             i = 0; x = 20;
 
             au.onplay = function () {
@@ -68,7 +91,7 @@
                     while (i > parseInt(au.currentTime)) {
                         gctx.fillStyle = 'grey'; // fill Colur of bar  
                         gctx.fillRect(x, Math.max(ymap[i], 30), bar_width, y - ymap[i]);// Filled bar 
-                        gctx.fillRect(x, 100, bar_width, 50);// Filled bar 
+                        gctx.fillRect(x, y, bar_width, 50);// Filled bar 
                         i--;
                         x = x - bar_gap
                     }
@@ -77,7 +100,7 @@
                     while (i < parseInt(au.currentTime)) {
                         gctx.fillStyle = '#f52369'; // fill Colur of bar  
                         gctx.fillRect(x, Math.max(ymap[i], 30), bar_width, y - ymap[i]);// Filled bar 
-                        gctx.fillRect(x, 100, bar_width, 50);// Filled bar 
+                        gctx.fillRect(x, y, bar_width, 50);// Filled bar 
                         i++;
                         x = x + bar_gap
                     }
@@ -86,7 +109,7 @@
                 a = setInterval(function () {
                     gctx.fillStyle = '#f52369'; // fill Colur of bar  
                     gctx.fillRect(x, Math.max(ymap[i], 30), bar_width, y - ymap[i]);// Filled bar 
-                    gctx.fillRect(x, 100, bar_width, 50);// Filled bar 
+                    gctx.fillRect(x, y, bar_width, 50);// Filled bar 
                     x = x + bar_gap;
                     i++;
                 }, 1000);
